@@ -32,7 +32,7 @@ The AnalysisSheet macro addresses these challenges by:
 
 ### Usage Instructions
 
-Refer to the [PrepareAnalysisSheet Usage Guide](docs/PrepareAnalysisSheet_usage_guide.md) for detailed setup and instructions.
+Refer to the [PrepareAnalysisSheet Usage Guide](docs/AnalysisSheet_usage_guide.md) for detailed setup and instructions.
 
 ---
 
