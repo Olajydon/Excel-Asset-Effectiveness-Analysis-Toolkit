@@ -1,4 +1,4 @@
-Sub CountAlphanumerics()
+Sub CountAlphanumerics() m
     Dim ws As Worksheet
     Dim cell As Range
     Dim itemDict As Object
