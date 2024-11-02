@@ -1,0 +1,82 @@
+Sub CountAlphanumerics()
+    Dim ws As Worksheet
+    Dim cell As Range
+    Dim itemDict As Object
+    Dim arr() As String
+    Dim uniqueItem As Variant
+    Dim i As Long
+    Dim itemCount As Variant
+    Dim itemList As Variant
+    Dim tempArr() As Variant
+    Dim tempStr As String
+    Dim maxOutput As Long
+    
+    ' Set the active worksheet to the current sheet
+    Set ws = ActiveSheet
+    
+    ' Clear previous results in output columns (adjust columns to output to as needed)
+    ws.Range("BF2:BG11").ClearContents
+    
+    ' Create a dictionary object for counting unique alphanumeric items
+    Set itemDict = CreateObject("Scripting.Dictionary")
+    
+    ' Loop through the specified range (adjust range as needed)
+    For Each cell In ws.Range("AZ2:AZ100")
+        If Len(cell.Value) > 0 Then
+            ' Split the cell value by comma and process each alphanumeric item
+            arr = Split(cell.Value, ",")
+            For i = LBound(arr) To UBound(arr)
+                ' Trim and convert to uppercase for case-insensitive counting
+                tempStr = Trim(UCase(arr(i))) 
+                If tempStr <> "" Then
+                    ' Add or update the count for each unique item
+                    If itemDict.exists(tempStr) Then
+                        itemDict(tempStr) = itemDict(tempStr) + 1
+                    Else
+                        itemDict.Add tempStr, 1
+                    End If
+                End If
+            Next i
+        End If
+    Next cell
+    
+    ' Define the maximum number of top entries to display (e.g., top 10)
+    If itemDict.Count > 10 Then
+        maxOutput = 10
+    Else
+        maxOutput = itemDict.Count
+    End If
+    
+    ' Convert dictionary to array for sorting
+    itemList = itemDict.keys
+    itemCount = itemDict.items
+    ReDim tempArr(1 To itemDict.Count, 1 To 2)
+    
+    For i = 1 To itemDict.Count
+        tempArr(i, 1) = itemList(i - 1)
+        tempArr(i, 2) = itemCount(i - 1)
+    Next i
+    
+    ' Sort array by count in descending order
+    Dim j As Long, temp1 As Variant, temp2 As Variant
+    For i = LBound(tempArr, 1) To UBound(tempArr, 1) - 1
+        For j = i + 1 To UBound(tempArr, 1)
+            If tempArr(i, 2) < tempArr(j, 2) Then
+                ' Swap entries
+                temp1 = tempArr(i, 1)
+                temp2 = tempArr(i, 2)
+                tempArr(i, 1) = tempArr(j, 1)
+                tempArr(i, 2) = tempArr(j, 2)
+                tempArr(j, 1) = temp1
+                tempArr(j, 2) = temp2
+            End If
+        Next j
+    Next i
+    
+    ' Output the top alphanumeric items and their counts in specified columns
+    ' Adjust output range as needed
+    For i = 1 To maxOutput
+        ws.Cells(2 + i - 1, 58).Value = tempArr(i, 1) ' Column BF for unique items
+        ws.Cells(2 + i - 1, 59).Value = tempArr(i, 2) ' Column BG for counts
+    Next i
+End Sub
